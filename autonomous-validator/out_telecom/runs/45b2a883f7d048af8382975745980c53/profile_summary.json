@@ -1,0 +1,328 @@
+{
+  "dataset_name": "telecom.csv",
+  "row_count_estimate": 10,
+  "columns": [
+    {
+      "name": "call_id",
+      "inferred_type": "string",
+      "example_values_masked": [
+        "C001",
+        "C002",
+        "C003"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 1.0,
+      "top_values_masked": [
+        "C001",
+        "C002",
+        "C003",
+        "C004",
+        "C005"
+      ],
+      "length_min": 4,
+      "length_max": 4,
+      "pattern_samples": [
+        "A999",
+        "A999",
+        "A999",
+        "A999",
+        "A999",
+        "A999",
+        "A999",
+        "A999",
+        "A999",
+        "A999"
+      ],
+      "numeric_stats": null,
+      "date_stats": null
+    },
+    {
+      "name": "caller_msisdn",
+      "inferred_type": "string",
+      "example_values_masked": [
+        "91********10",
+        "91********10",
+        "91********00"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 0.9,
+      "top_values_masked": [
+        "91********10",
+        "91********00",
+        "91********11",
+        "91********33",
+        "91********55"
+      ],
+      "length_min": 11,
+      "length_max": 12,
+      "pattern_samples": [
+        "99********99",
+        "99********99",
+        "99********99",
+        "99********99",
+        "99********99",
+        "99********99",
+        "99********99",
+        "99********99",
+        "99********99",
+        "AAA_A_AAAAA"
+      ],
+      "numeric_stats": null,
+      "date_stats": null
+    },
+    {
+      "name": "callee_msisdn",
+      "inferred_type": "string",
+      "example_values_masked": [
+        "~1e11",
+        "~1e11",
+        "~1e11"
+      ],
+      "null_rate": 0.1,
+      "unique_rate": 0.1111111111111111,
+      "top_values_masked": [
+        "~1e11"
+      ],
+      "length_min": 5,
+      "length_max": 5,
+      "pattern_samples": [
+        "~9A99",
+        "~9A99",
+        "~9A99",
+        "~9A99",
+        "~9A99",
+        "~9A99",
+        "~9A99",
+        "~9A99",
+        "~9A99"
+      ],
+      "numeric_stats": null,
+      "date_stats": null
+    },
+    {
+      "name": "call_start_utc",
+      "inferred_type": "string",
+      "example_values_masked": [
+        "20****01T10:15:30Z",
+        "20****01T10:18:01Z",
+        "20****01T10:25:10Z"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 1.0,
+      "top_values_masked": [
+        "20****01T10:15:30Z",
+        "20****01T10:18:01Z",
+        "20****01T10:25:10Z",
+        "20****01T11:01:05Z",
+        "20****01T11:15:00Z"
+      ],
+      "length_min": 18,
+      "length_max": 18,
+      "pattern_samples": [
+        "99****99A99:99:99A",
+        "99****99A99:99:99A",
+        "99****99A99:99:99A",
+        "99****99A99:99:99A",
+        "99****99A99:99:99A",
+        "99****99A99:99:99A",
+        "99****99A99:99:99A",
+        "99****99A99:99:99A",
+        "99****99A99:99:99A",
+        "99****99A99:99:99A"
+      ],
+      "numeric_stats": null,
+      "date_stats": null
+    },
+    {
+      "name": "call_duration_sec",
+      "inferred_type": "integer",
+      "example_values_masked": [
+        "120",
+        "0",
+        "-30"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 1.0,
+      "top_values_masked": [
+        "120",
+        "0",
+        "-30",
+        "3600",
+        "45"
+      ],
+      "length_min": null,
+      "length_max": null,
+      "pattern_samples": [],
+      "numeric_stats": {
+        "min": -30.0,
+        "max": 999999.0,
+        "mean": 100428.9,
+        "std": 316078.6582831875,
+        "p05": -16.5,
+        "p50": 90.0,
+        "p95": 551619.449999999
+      },
+      "date_stats": null
+    },
+    {
+      "name": "call_type",
+      "inferred_type": "string",
+      "example_values_masked": [
+        "VOICE",
+        "VOICE",
+        "VOICE"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 0.3,
+      "top_values_masked": [
+        "VOICE",
+        "SMS",
+        "DATA"
+      ],
+      "length_min": 3,
+      "length_max": 5,
+      "pattern_samples": [
+        "AAAAA",
+        "AAAAA",
+        "AAAAA",
+        "AAAAA",
+        "AAA",
+        "AAAA",
+        "AAAAA",
+        "AAAAA",
+        "AAAAA",
+        "AAAAA"
+      ],
+      "numeric_stats": null,
+      "date_stats": null
+    },
+    {
+      "name": "cell_tower_id",
+      "inferred_type": "string",
+      "example_values_masked": [
+        "TWR-1023",
+        "TWR-1023",
+        "TWR-1024"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 0.8,
+      "top_values_masked": [
+        "TWR-1023",
+        "TWR-1025",
+        "TWR-1024",
+        "TWR-1026",
+        "TWR-1027"
+      ],
+      "length_min": 8,
+      "length_max": 8,
+      "pattern_samples": [
+        "AAA-9999",
+        "AAA-9999",
+        "AAA-9999",
+        "AAA-9999",
+        "AAA-9999",
+        "AAA-9999",
+        "AAA-9999",
+        "AAA-9999",
+        "AAA-9999",
+        "AAA-9999"
+      ],
+      "numeric_stats": null,
+      "date_stats": null
+    },
+    {
+      "name": "country_code",
+      "inferred_type": "string",
+      "example_values_masked": [
+        "IN",
+        "IN",
+        "IN"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 0.1,
+      "top_values_masked": [
+        "IN"
+      ],
+      "length_min": 2,
+      "length_max": 2,
+      "pattern_samples": [
+        "AA",
+        "AA",
+        "AA",
+        "AA",
+        "AA",
+        "AA",
+        "AA",
+        "AA",
+        "AA",
+        "AA"
+      ],
+      "numeric_stats": null,
+      "date_stats": null
+    },
+    {
+      "name": "charge_amount",
+      "inferred_type": "number",
+      "example_values_masked": [
+        "3.5",
+        "0.0",
+        "2.0"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 1.0,
+      "top_values_masked": [
+        "3.5",
+        "0.0",
+        "2.0",
+        "150.0",
+        "1.0"
+      ],
+      "length_min": null,
+      "length_max": null,
+      "pattern_samples": [],
+      "numeric_stats": {
+        "min": 0.0,
+        "max": 150.0,
+        "mean": 21.3,
+        "std": 46.01038530109866,
+        "p05": 0.45,
+        "p50": 3.75,
+        "p95": 93.74999999999986
+      },
+      "date_stats": null
+    },
+    {
+      "name": "currency",
+      "inferred_type": "string",
+      "example_values_masked": [
+        "INR",
+        "INR",
+        "INR"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 0.1,
+      "top_values_masked": [
+        "INR"
+      ],
+      "length_min": 3,
+      "length_max": 3,
+      "pattern_samples": [
+        "AAA",
+        "AAA",
+        "AAA",
+        "AAA",
+        "AAA",
+        "AAA",
+        "AAA",
+        "AAA",
+        "AAA",
+        "AAA"
+      ],
+      "numeric_stats": null,
+      "date_stats": null
+    }
+  ],
+  "notes": [
+    "profile computed on masked sample"
+  ]
+}

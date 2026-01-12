@@ -1,0 +1,18 @@
+{
+  "dataset_fingerprint": {
+    "dataset_ref": "examples/invoices.csv",
+    "exists": true,
+    "size_bytes": 191,
+    "sha256_head": "3a9bf0247061e76c4fa9d90820c62c99afc0ab33ea9ff7672c1ccad0a9b0484b"
+  },
+  "llm": {
+    "model": "gemini-flash-latest"
+  },
+  "prompt_versions": {
+    "domain_inferencer": "v1",
+    "check_generator": "v1",
+    "skeptic": "v1",
+    "report_writer": "v1"
+  },
+  "sample_n": 500
+}

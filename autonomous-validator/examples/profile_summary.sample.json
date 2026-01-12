@@ -1,0 +1,27 @@
+{
+  "dataset_name": "invoice_sample",
+  "row_count_estimate": 1200,
+  "columns": [
+    {
+      "name": "invoice_id",
+      "inferred_type": "string",
+      "example_values_masked": [
+        "INV_***",
+        "INV_***"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 0.999,
+      "top_values_masked": [],
+      "length_min": 6,
+      "length_max": 12,
+      "pattern_samples": [
+        "AAA_999"
+      ],
+      "numeric_stats": null,
+      "date_stats": null
+    }
+  ],
+  "notes": [
+    "sample-only profile"
+  ]
+}

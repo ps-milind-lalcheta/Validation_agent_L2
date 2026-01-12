@@ -1,0 +1,225 @@
+{
+  "checks": [
+    {
+      "check_id": "call_id_format_validation",
+      "check_type": "regex_match",
+      "title": "Validate Call ID Format (A999)",
+      "rationale": "Ensures that the primary identifier for the call event conforms to the expected internal naming convention derived from the pattern samples ('A999'). Consistency is crucial for joins and indexing.",
+      "assumption": "The 'call_id' follows a strict format of one uppercase letter followed by three digits.",
+      "severity_suggestion": "fail",
+      "confidence": 0.9,
+      "params": {
+        "column": "call_id",
+        "regex": "^[A-Z]{1}[0-9]{3}$"
+      }
+    },
+    {
+      "check_id": "caller_msisdn_length_standard",
+      "check_type": "length_range",
+      "title": "Caller MSISDN Length Check",
+      "rationale": "Mobile Station International Subscriber Directory Numbers (MSISDNs) typically fall within a standard length range (10-15 digits) globally. Values outside this range suggest data corruption or incorrect masking.",
+      "assumption": "MSISDNs in this dataset, even if masked, represent standard mobile phone numbers requiring 10 to 15 characters.",
+      "severity_suggestion": "warn",
+      "confidence": 0.95,
+      "params": {
+        "column": "caller_msisdn",
+        "min_length": 10,
+        "max_length": 15
+      }
+    },
+    {
+      "check_id": "callee_msisdn_not_null",
+      "check_type": "not_null",
+      "title": "Callee MSISDN Must Not Be Null (Low Tolerance)",
+      "rationale": "A Call Detail Record (CDR) must typically have both a caller and a callee. A 10% null rate for 'callee_msisdn' is high and suggests missing destination information, which is critical for billing and network analysis.",
+      "assumption": "The destination number ('callee_msisdn') is mandatory for a valid call record.",
+      "severity_suggestion": "fail",
+      "confidence": 0.9,
+      "params": {
+        "column": "callee_msisdn",
+        "threshold": 0.01
+      }
+    },
+    {
+      "check_id": "callee_msisdn_length_consistency",
+      "check_type": "length_range",
+      "title": "Callee MSISDN Length Check (Addressing Length 5 Anomaly)",
+      "rationale": "The profile shows a suspicious length of 5 for 'callee_msisdn'. Assuming this is an artifact of masking or bad data, this check enforces a realistic length range consistent with standard MSISDNs (10-15 characters), similar to the caller field.",
+      "assumption": "Both caller and callee MSISDNs should adhere to similar standard phone number length requirements.",
+      "severity_suggestion": "fail",
+      "confidence": 0.8,
+      "params": {
+        "column": "callee_msisdn",
+        "min_length": 10,
+        "max_length": 15
+      }
+    },
+    {
+      "check_id": "call_start_utc_not_in_future",
+      "check_type": "date_not_future",
+      "title": "Call Start Time Must Not Be In The Future",
+      "rationale": "Ensures that all recorded events have occurred in the past, preventing ingestion of records with incorrect system timestamps or future dates.",
+      "assumption": "All records represent historical call events.",
+      "severity_suggestion": "fail",
+      "confidence": 1.0,
+      "params": {
+        "column": "call_start_utc",
+        "date_format": "YYYY-MM-DDTHH:MM:SSZ"
+      }
+    },
+    {
+      "check_id": "call_start_utc_iso_format",
+      "check_type": "regex_match",
+      "title": "Validate Call Start Time ISO 8601 UTC Format",
+      "rationale": "Ensures the timestamp field adheres strictly to the expected ISO 8601 format ending in 'Z' (Zulu/UTC), which is critical for time series analysis and cross-system compatibility.",
+      "assumption": "The 'call_start_utc' column uses the standard ISO 8601 format for UTC timestamps.",
+      "severity_suggestion": "fail",
+      "confidence": 0.95,
+      "params": {
+        "column": "call_start_utc",
+        "regex": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+      }
+    },
+    {
+      "check_id": "call_duration_non_negative",
+      "check_type": "value_range",
+      "title": "Call Duration Must Be Non-Negative",
+      "rationale": "Physical duration cannot be negative. The profile shows a minimum value of -30, indicating data corruption or an error in logging/processing.",
+      "assumption": "Call duration must be zero or positive.",
+      "severity_suggestion": "fail",
+      "confidence": 1.0,
+      "params": {
+        "column": "call_duration_sec",
+        "min_value": 0.0
+      }
+    },
+    {
+      "check_id": "call_duration_outlier_iqr",
+      "check_type": "outlier_iqr",
+      "title": "Detect Extreme Outliers in Call Duration",
+      "rationale": "Identifies extremely long calls (e.g., sessions left open) that might skew aggregate statistics or indicate system errors, especially given the high maximum value (999999 seconds).",
+      "assumption": "Call durations follow a distribution where extreme values (3.0 * IQR beyond quartiles) are likely anomalies.",
+      "severity_suggestion": "warn",
+      "confidence": 0.8,
+      "params": {
+        "column": "call_duration_sec",
+        "iqr_factor": 3.0
+      }
+    },
+    {
+      "check_id": "call_type_new_categories",
+      "check_type": "category_newness",
+      "title": "Monitor New Call Types",
+      "rationale": "Ensures that new, unexpected categories (beyond VOICE, SMS, DATA) are flagged, as they might require updates to downstream processing or billing logic.",
+      "assumption": "The set of valid 'call_type' values is relatively stable, and new values should be reviewed.",
+      "severity_suggestion": "info",
+      "confidence": 0.9,
+      "params": {
+        "column": "call_type",
+        "threshold": 0.05,
+        "known_categories": [
+          "VOICE",
+          "SMS",
+          "DATA"
+        ]
+      }
+    },
+    {
+      "check_id": "cell_tower_id_format",
+      "check_type": "regex_match",
+      "title": "Validate Cell Tower ID Format",
+      "rationale": "Ensures the cell tower identifier adheres to the expected internal structure (e.g., 'TWR-XXXX'), which is vital for network analysis and location tracking.",
+      "assumption": "Cell tower IDs follow the format 'TWR-' followed by four digits.",
+      "severity_suggestion": "warn",
+      "confidence": 0.9,
+      "params": {
+        "column": "cell_tower_id",
+        "regex": "^TWR-[0-9]{4}$"
+      }
+    },
+    {
+      "check_id": "country_code_iso_standard",
+      "check_type": "value_range",
+      "title": "Validate Country Code Against Expected Set",
+      "rationale": "Ensures the country code is one of the expected ISO 3166-1 alpha-2 codes relevant to the telecom operator's service area.",
+      "assumption": "The dataset primarily covers India ('IN') but should allow for a small set of valid, known country codes.",
+      "severity_suggestion": "warn",
+      "confidence": 0.85,
+      "params": {
+        "column": "country_code",
+        "allowed_values": [
+          "IN",
+          "US",
+          "GB",
+          "DE",
+          "FR"
+        ]
+      }
+    },
+    {
+      "check_id": "charge_amount_non_negative",
+      "check_type": "value_range",
+      "title": "Charge Amount Must Be Non-Negative",
+      "rationale": "Billing charges should typically be zero or positive. Negative charges usually indicate refunds or errors, which should be explicitly monitored if they occur frequently.",
+      "assumption": "This field represents a charge, not a credit/refund, and must be non-negative.",
+      "severity_suggestion": "fail",
+      "confidence": 1.0,
+      "params": {
+        "column": "charge_amount",
+        "min_value": 0.0
+      }
+    },
+    {
+      "check_id": "currency_code_standard",
+      "check_type": "value_range",
+      "title": "Validate Currency Code Against Expected Set",
+      "rationale": "Ensures the currency code is a valid ISO 4217 code and matches the expected currencies used for billing.",
+      "assumption": "The primary currency is INR, but a few other major currencies might be expected for international calls.",
+      "severity_suggestion": "fail",
+      "confidence": 0.9,
+      "params": {
+        "column": "currency",
+        "allowed_values": [
+          "INR",
+          "USD",
+          "EUR",
+          "GBP"
+        ]
+      }
+    },
+    {
+      "check_id": "dependency_zero_duration_zero_charge",
+      "check_type": "cross_field_dependency",
+      "title": "Zero Duration Implies Zero Charge",
+      "rationale": "If a call or session lasted zero seconds (e.g., failed connection, missed call), it should generally not incur a charge. This checks for billing errors where zero-duration events are charged.",
+      "assumption": "Billing logic dictates that events with zero duration must have a zero charge amount.",
+      "severity_suggestion": "fail",
+      "confidence": 0.9,
+      "params": {
+        "primary_column": "call_duration_sec",
+        "dependent_column": "charge_amount",
+        "condition": "EQ",
+        "value": 0,
+        "dependency_condition": "EQ",
+        "dependency_value": 0
+      }
+    },
+    {
+      "check_id": "dependency_charged_call_positive_duration",
+      "check_type": "cross_field_dependency",
+      "title": "Charged Call Must Have Non-Negative Duration",
+      "rationale": "If a charge is applied (charge_amount > 0), the associated duration must logically be non-negative. This specifically catches the negative duration issue identified in the profile when linked to billing.",
+      "assumption": "Any charged event must have a duration greater than or equal to zero.",
+      "severity_suggestion": "fail",
+      "confidence": 0.95,
+      "params": {
+        "primary_column": "charge_amount",
+        "dependent_column": "call_duration_sec",
+        "condition": "GT",
+        "value": 0,
+        "dependency_condition": "GTE",
+        "dependency_value": 0
+      }
+    }
+  ]
+}

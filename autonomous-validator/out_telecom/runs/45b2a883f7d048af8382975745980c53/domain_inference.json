@@ -1,0 +1,81 @@
+{
+  "hypotheses": [
+    {
+      "domain": "Telecommunications",
+      "confidence": 1.0,
+      "rationale": "The dataset name is 'telecom.csv' and columns include telecom-specific terms like 'call_id', 'caller_msisdn', 'callee_msisdn', 'call_duration_sec', 'call_type' (VOICE, SMS, DATA), and 'cell_tower_id', indicating Call Detail Records (CDR) or usage data."
+    },
+    {
+      "domain": "Billing/Invoicing",
+      "confidence": 0.9,
+      "rationale": "The presence of 'charge_amount' and 'currency' alongside usage details suggests the data is used for billing purposes related to telecom services."
+    }
+  ],
+  "column_roles": [
+    {
+      "column": "call_id",
+      "role": "id",
+      "confidence": 1.0,
+      "rationale": "Unique identifier for each row/call event (unique_rate=1.0, pattern 'A999')."
+    },
+    {
+      "column": "caller_msisdn",
+      "role": "phone",
+      "confidence": 1.0,
+      "rationale": "MSISDN stands for Mobile Station International Subscriber Directory Number, which is a standard telecom identifier for a phone number. Example values are masked phone numbers."
+    },
+    {
+      "column": "callee_msisdn",
+      "role": "phone",
+      "confidence": 1.0,
+      "rationale": "MSISDN stands for Mobile Station International Subscriber Directory Number, representing the recipient's phone number."
+    },
+    {
+      "column": "call_start_utc",
+      "role": "timestamp",
+      "confidence": 1.0,
+      "rationale": "Represents the start time of the event in UTC format (e.g., '20****01T10:15:30Z')."
+    },
+    {
+      "column": "call_duration_sec",
+      "role": "unknown",
+      "confidence": 0.9,
+      "rationale": "Represents a quantitative measurement (duration in seconds) related to the call event. While a metric, it doesn't fit standard roles like amount or date."
+    },
+    {
+      "column": "call_type",
+      "role": "category",
+      "confidence": 1.0,
+      "rationale": "Categorical field describing the type of communication (e.g., 'VOICE', 'SMS', 'DATA')."
+    },
+    {
+      "column": "cell_tower_id",
+      "role": "id",
+      "confidence": 0.9,
+      "rationale": "Identifier for the network infrastructure component (Cell Tower ID) associated with the call, following a pattern like 'TWR-9999'."
+    },
+    {
+      "column": "country_code",
+      "role": "country",
+      "confidence": 1.0,
+      "rationale": "Contains two-letter codes (e.g., 'IN') representing the country."
+    },
+    {
+      "column": "charge_amount",
+      "role": "amount",
+      "confidence": 1.0,
+      "rationale": "Numeric field representing the monetary cost associated with the call/usage."
+    },
+    {
+      "column": "currency",
+      "role": "currency",
+      "confidence": 1.0,
+      "rationale": "Contains three-letter codes (e.g., 'INR') representing the currency for the charge amount."
+    }
+  ],
+  "assumptions": [
+    "MSISDN fields contain standard mobile phone numbers, despite being masked.",
+    "The 'call_duration_sec' column represents a metric measurement."
+  ],
+  "questions_to_reduce_uncertainty": []
+}

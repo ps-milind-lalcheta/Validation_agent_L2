@@ -1,0 +1,178 @@
+{
+  "decision": "FAIL",
+  "overall_confidence": 0.8,
+  "inferred_domains": [
+    {
+      "domain": "Telecommunications",
+      "confidence": 1.0,
+      "rationale": "The dataset contains columns typical of Call Detail Records (CDR), including 'call_id', 'caller_msisdn', 'callee_msisdn', 'call_start_utc', 'call_duration_sec', 'call_type' (VOICE, SMS, DATA), and 'cell_tower_id'. The dataset name is also 'telecom.csv'."
+    },
+    {
+      "domain": "Billing / Finance",
+      "confidence": 0.8,
+      "rationale": "The presence of 'charge_amount' and 'currency' indicates that this data is used for billing or financial tracking related to the telecom usage."
+    }
+  ],
+  "key_assumptions": [
+    "Standard call duration metrics must be zero or positive; this assumption was violated by a negative duration record.",
+    "The destination identifier ('callee_msisdn') is critical for billing and routing and should be present for most records.",
+    "The small sample size (N=10) means violation rates are highly volatile, but the observed anomalies are severe."
+  ],
+  "top_issues": [
+    "Data Integrity Failure: The 'call_duration_sec' field contains a negative value (-30 seconds), which violates the physical constraints of time and standard billing logic.",
+    "Data Quality: An extreme outlier was detected in 'call_duration_sec' (999,999 seconds, ~11.5 days), highly indicative of a system error or stuck connection record.",
+    "Data Completeness: The 'callee_msisdn' has a 10% null rate, exceeding the acceptable threshold for a critical identifier.",
+    "Technical Debt: Two critical cross-field dependency checks (C14, C15) failed to execute due to technical errors, preventing verification of core business logic."
+  ],
+  "findings": [
+    {
+      "check_id": "C1_CALL_ID_UNIQUE",
+      "outcome": "pass",
+      "confidence": 1.0,
+      "summary": "Call ID is unique across the sample.",
+      "evidence_used": "Violation rate 0.0 (0/10).",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C2_CALL_ID_FORMAT",
+      "outcome": "pass",
+      "confidence": 0.7,
+      "summary": "Call ID format appears consistent with the expected pattern (A999), but the check execution reported a missing pattern.",
+      "evidence_used": "Violation rate 0.0 (0/10). Note: 'Missing pattern for regex_match' indicates incomplete verification.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C3_CALLEE_MSISDN_NULL_RATE",
+      "outcome": "warn",
+      "confidence": 0.8,
+      "summary": "The null rate for 'callee_msisdn' is 10% (1/10), exceeding the 5% threshold. This is a critical data completeness issue.",
+      "evidence_used": "Violation rate 0.1 (1/10). Example shows a null value for a recorded call.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C4_CALL_DURATION_NON_NEGATIVE",
+      "outcome": "fail",
+      "confidence": 0.95,
+      "summary": "Found 1 record with a negative call duration (-30 seconds), violating the fundamental assumption that duration must be non-negative.",
+      "evidence_used": "Violation rate 0.1 (1/10). Example: call_duration_sec = -30.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C5_CALL_DURATION_OUTLIER",
+      "outcome": "warn",
+      "confidence": 0.9,
+      "summary": "20% of records are extreme outliers based on IQR analysis, including a duration of 999,999 seconds, suggesting severe data errors or stuck records.",
+      "evidence_used": "Violation rate 0.2 (2/10). IQR bounds [-348.8, 641.2] were exceeded by 3600 and 999999.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C6_CALL_START_NOT_FUTURE",
+      "outcome": "pass",
+      "confidence": 0.5,
+      "summary": "No future dates were detected, but the check was inconclusive as 0 rows were evaluated, likely due to parsing issues or execution environment limitations.",
+      "evidence_used": "Total evaluated 0. No violations reported.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C7_CALL_TYPE_STABILITY",
+      "outcome": "pass",
+      "confidence": 0.9,
+      "summary": "All observed call types (VOICE, SMS, DATA) were known categories.",
+      "evidence_used": "Violation rate 0.0 (0/10).",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C8_CELL_TOWER_ID_FORMAT",
+      "outcome": "pass",
+      "confidence": 0.7,
+      "summary": "Cell Tower ID format appears consistent (TWR-XXXX), but the check execution reported a missing pattern.",
+      "evidence_used": "Violation rate 0.0 (0/10). Note: 'Missing pattern for regex_match' indicates incomplete verification.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C9_CHARGE_AMOUNT_NON_NEGATIVE",
+      "outcome": "pass",
+      "confidence": 0.95,
+      "summary": "All charge amounts are non-negative.",
+      "evidence_used": "Violation rate 0.0 (0/10). Minimum charge amount is 0.0.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C10_CURRENCY_FORMAT",
+      "outcome": "pass",
+      "confidence": 0.7,
+      "summary": "Currency codes appear to follow ISO 4217 (AAA format), but the check execution reported a missing pattern.",
+      "evidence_used": "Violation rate 0.0 (0/10). Note: 'Missing pattern for regex_match' indicates incomplete verification.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C11_COUNTRY_CODE_FORMAT",
+      "outcome": "pass",
+      "confidence": 0.7,
+      "summary": "Country codes appear to follow ISO 3166-1 alpha-2 (AA format), but the check execution reported a missing pattern.",
+      "evidence_used": "Violation rate 0.0 (0/10). Note: 'Missing pattern for regex_match' indicates incomplete verification.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C12_CALLER_MSISDN_LENGTH",
+      "outcome": "pass",
+      "confidence": 0.9,
+      "summary": "Caller MSISDN lengths are consistently within the expected range (11-12 characters).",
+      "evidence_used": "Violation rate 0.0 (0/10).",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C13_CALLEE_MSISDN_LENGTH_CHECK",
+      "outcome": "pass",
+      "confidence": 0.7,
+      "summary": "Confirmed that non-null Callee MSISDNs adhere to the observed length of 5, suggesting they are short codes or internal identifiers rather than standard MSISDNs.",
+      "evidence_used": "Violation rate 0.0 (0/9 evaluated).",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C14_CROSS_FIELD_ZERO_DURATION_ZERO_CHARGE",
+      "outcome": "warn",
+      "confidence": 0.5,
+      "summary": "Critical cross-field dependency (Zero duration implies zero charge) could not be verified due to a technical execution error ('Missing column: unknown').",
+      "evidence_used": "Total evaluated 0. Check failed to execute.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C15_CROSS_FIELD_COUNTRY_CURRENCY_MATCH",
+      "outcome": "warn",
+      "confidence": 0.5,
+      "summary": "Critical cross-field dependency (IN country implies INR currency) could not be verified due to a technical execution error ('Missing column: unknown').",
+      "evidence_used": "Total evaluated 0. Check failed to execute.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "C16_CALL_START_UTC_REGEX",
+      "outcome": "pass",
+      "confidence": 0.7,
+      "summary": "Call Start UTC format appears consistent, but the check execution reported a missing pattern.",
+      "evidence_used": "Violation rate 0.0 (0/10). Note: 'Missing pattern for regex_match' indicates incomplete verification.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    }
+  ],
+  "human_summary": "The dataset, identified as Telecommunications CDR data, fails integrity checks due to the presence of physically impossible negative call durations. Furthermore, the data contains severe outliers (999,999 seconds) and exhibits a 10% null rate for the critical 'callee_msisdn' field. While structural formats generally appear correct, several key validation checks (regex and cross-field dependencies) failed to execute properly, leaving critical business logic unverified. Remediation is required to address the negative duration and outliers before this data can be reliably used for billing or analysis.",
+  "audit_notes": [
+    "The small sample size (N=10) exaggerates the 10% null rate and 20% outlier rate, but the nature of the violations (negative duration, 11.5-day call) is fundamentally problematic.",
+    "Multiple checks reported 'Missing pattern for regex_match' or 'Missing column: unknown', suggesting issues with check definition or executor environment setup, lowering confidence in the completeness of the PASS results."
+  ]
+}

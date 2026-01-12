@@ -1,0 +1,208 @@
+{
+  "decision": "FAIL",
+  "overall_confidence": 0.75,
+  "inferred_domains": [
+    {
+      "domain": "Telecommunications",
+      "confidence": 1.0,
+      "rationale": "The dataset contains standard Call Detail Record (CDR) fields: MSISDNs, call duration, call type, and cell tower IDs."
+    },
+    {
+      "domain": "Billing/Invoicing",
+      "confidence": 0.9,
+      "rationale": "The presence of 'charge_amount' and 'currency' confirms the data's use for financial tracking related to telecom usage."
+    }
+  ],
+  "key_assumptions": [
+    "MSISDN fields represent standard mobile phone numbers (10-15 characters).",
+    "The destination number ('callee_msisdn') is mandatory for a valid call record.",
+    "Call duration must be non-negative.",
+    "The execution environment correctly applied regex patterns and handled date/time comparisons, despite notes suggesting otherwise."
+  ],
+  "top_issues": [
+    "Critical Data Loss: 10% of records are missing the destination MSISDN ('callee_msisdn'), rendering them incomplete for billing or analysis.",
+    "Data Integrity Contradiction: The profile summary indicates a minimum 'call_duration_sec' of -30, but the non-negative check reported zero violations. This suggests a severe failure in the validation process or highly inconsistent sampling, undermining confidence in numerical integrity.",
+    "Extreme Outliers: Call durations include extreme outliers (up to 999,999 seconds), likely indicating system errors or stuck sessions.",
+    "Execution Failures: Multiple critical checks (date validation, country/currency standards, cross-field dependencies) failed to execute (0 evaluated), leaving significant gaps in validation coverage."
+  ],
+  "findings": [
+    {
+      "check_id": "call_id_format_validation",
+      "outcome": "pass",
+      "confidence": 0.5,
+      "summary": "Call ID format passed validation (0 violations). Confidence is lowered due to executor notes indicating a potential issue with pattern application.",
+      "evidence_used": "violation_rate: 0.0. Notes mention 'Missing pattern for regex_match'.",
+      "alternative_explanations": [
+        "The regex pattern was missing, meaning the check effectively passed by default.",
+        "The sample data coincidentally matched a default or empty pattern."
+      ],
+      "recommended_next_steps": [
+        "Verify and re-apply the correct regex pattern for Call ID validation."
+      ]
+    },
+    {
+      "check_id": "caller_msisdn_length_standard",
+      "outcome": "pass",
+      "confidence": 0.95,
+      "summary": "Caller MSISDN lengths (11-12) are within the expected standard range (10-15 characters).",
+      "evidence_used": "violation_rate: 0.0.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "callee_msisdn_not_null",
+      "outcome": "fail",
+      "confidence": 0.9,
+      "summary": "Critical failure: 10% of records are missing the destination number ('callee_msisdn'), exceeding the 1% tolerance threshold. This renders these CDRs incomplete for billing.",
+      "evidence_used": "violation_rate: 0.1 (1 violation out of 10 evaluated).",
+      "alternative_explanations": [],
+      "recommended_next_steps": [
+        "Identify the source system responsible for generating these null records.",
+        "Implement data imputation or rejection logic for incomplete CDRs.",
+        "QUARANTINE the 10% of records lacking this critical identifier."
+      ]
+    },
+    {
+      "check_id": "callee_msisdn_length_consistency",
+      "outcome": "pass",
+      "confidence": 0.6,
+      "summary": "No violations found against the 10-15 length range for non-null values. However, the profile summary indicated a length of 5, suggesting a potential inconsistency between the profile and the data used for this specific check.",
+      "evidence_used": "violation_rate: 0.0 (9 records evaluated).",
+      "alternative_explanations": [
+        "The profile summary was based on a different, potentially corrupted, sample.",
+        "The length check correctly filtered out the null value but missed a short value reported in the profile."
+      ],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "call_start_utc_not_in_future",
+      "outcome": "warn",
+      "confidence": 0.5,
+      "summary": "Check failed to execute (0 records evaluated). Cannot confirm that timestamps are not erroneously set in the future.",
+      "evidence_used": "total_evaluated: 0.",
+      "alternative_explanations": [],
+      "recommended_next_steps": [
+        "Verify execution environment configuration and column availability.",
+        "Rerun check after resolving execution dependencies."
+      ]
+    },
+    {
+      "check_id": "call_start_utc_iso_format",
+      "outcome": "pass",
+      "confidence": 0.5,
+      "summary": "Timestamp format passed validation (0 violations). Confidence is lowered due to executor notes indicating a potential issue with pattern application.",
+      "evidence_used": "violation_rate: 0.0. Notes mention 'Missing pattern for regex_match'.",
+      "alternative_explanations": [],
+      "recommended_next_steps": [
+        "Verify and re-apply the correct ISO 8601 regex pattern."
+      ]
+    },
+    {
+      "check_id": "call_duration_non_negative",
+      "outcome": "warn",
+      "confidence": 0.7,
+      "summary": "The check reported 0 violations, but this directly contradicts the profile summary which shows a minimum duration of -30.0. This suggests the check failed to correctly identify or process negative values, indicating a severe data integrity issue that was masked by a flawed execution result.",
+      "evidence_used": "violation_rate: 0.0. Profile summary shows min: -30.0.",
+      "alternative_explanations": [
+        "The validation environment incorrectly cast the duration field (e.g., unsigned integer conversion) before the comparison.",
+        "The profiling step used a different, potentially larger, dataset sample than the validation step."
+      ],
+      "recommended_next_steps": [
+        "Immediately investigate the data type and parsing logic for 'call_duration_sec'.",
+        "Rerun the non-negative check using a known negative test case.",
+        "Quarantine records where duration < 0 if found."
+      ]
+    },
+    {
+      "check_id": "call_duration_outlier_iqr",
+      "outcome": "warn",
+      "confidence": 0.8,
+      "summary": "20% of records were flagged as extreme outliers, including durations up to 999,999 seconds (11.5 days). These values require investigation as potential system errors or stuck sessions.",
+      "evidence_used": "violation_rate: 0.2 (2 violations). IQR bounds: [-348.8, 641.2].",
+      "alternative_explanations": [],
+      "recommended_next_steps": [
+        "Investigate the source of extreme duration outliers.",
+        "Define a hard upper limit for acceptable call duration based on business rules."
+      ]
+    },
+    {
+      "check_id": "call_type_new_categories",
+      "outcome": "pass",
+      "confidence": 0.9,
+      "summary": "No new or unexpected call types were detected beyond the known categories (VOICE, SMS, DATA).",
+      "evidence_used": "violation_rate: 0.0.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "cell_tower_id_format",
+      "outcome": "pass",
+      "confidence": 0.5,
+      "summary": "Cell Tower ID format passed validation (0 violations). Confidence is lowered due to executor notes indicating a potential issue with pattern application.",
+      "evidence_used": "violation_rate: 0.0. Notes mention 'Missing pattern for regex_match'.",
+      "alternative_explanations": [],
+      "recommended_next_steps": [
+        "Verify and re-apply the correct regex pattern for Cell Tower ID validation."
+      ]
+    },
+    {
+      "check_id": "country_code_iso_standard",
+      "outcome": "warn",
+      "confidence": 0.5,
+      "summary": "Check failed to execute (0 records evaluated). Cannot confirm country codes adhere to the ISO standard or expected service area list.",
+      "evidence_used": "total_evaluated: 0.",
+      "alternative_explanations": [],
+      "recommended_next_steps": [
+        "Verify execution environment configuration and column availability.",
+        "Rerun check after resolving execution dependencies."
+      ]
+    },
+    {
+      "check_id": "charge_amount_non_negative",
+      "outcome": "pass",
+      "confidence": 1.0,
+      "summary": "All charge amounts are non-negative, meeting the billing requirement.",
+      "evidence_used": "violation_rate: 0.0. Profile min: 0.0.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "currency_code_standard",
+      "outcome": "warn",
+      "confidence": 0.5,
+      "summary": "Check failed to execute (0 records evaluated). Cannot confirm currency codes adhere to the ISO 4217 standard or expected list.",
+      "evidence_used": "total_evaluated: 0.",
+      "alternative_explanations": [],
+      "recommended_next_steps": [
+        "Verify execution environment configuration and column availability.",
+        "Rerun check after resolving execution dependencies."
+      ]
+    },
+    {
+      "check_id": "dependency_zero_duration_zero_charge",
+      "outcome": "warn",
+      "confidence": 0.5,
+      "summary": "Cross-field dependency check failed to execute. Cannot validate the billing logic that zero duration events must have zero charge.",
+      "evidence_used": "total_evaluated: 0. Notes mention 'Missing column: unknown'.",
+      "alternative_explanations": [],
+      "recommended_next_steps": [
+        "Identify and correct the column name dependency issue.",
+        "Rerun the dependency check."
+      ]
+    },
+    {
+      "check_id": "dependency_charged_call_positive_duration",
+      "outcome": "warn",
+      "confidence": 0.5,
+      "summary": "Cross-field dependency check failed to execute. Cannot validate the critical billing logic that charged calls must have non-negative duration, especially given the profile's indication of negative duration values.",
+      "evidence_used": "total_evaluated: 0. Notes mention 'Missing column: unknown'.",
+      "alternative_explanations": [],
+      "recommended_next_steps": [
+        "Identify and correct the column name dependency issue.",
+        "Rerun the dependency check."
+      ]
+    }
+  ],
+  "human_summary": "The dataset, identified as Telecommunications Call Detail Records (CDRs), exhibits critical data quality failures. The most severe issue is the 10% null rate in the mandatory 'callee_msisdn' field, making these records unusable for billing or destination analysis. Furthermore, the validation process itself is highly suspect: the check for non-negative duration erroneously passed despite the profile showing a minimum value of -30 seconds. This contradiction suggests fundamental flaws in data logging or the validation execution environment. Coupled with extreme duration outliers and multiple failed dependency checks, the data integrity is insufficient for reliable downstream processing.",
+  "audit_notes": []
+}

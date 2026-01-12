@@ -1,0 +1,18 @@
+{
+  "dataset_fingerprint": {
+    "dataset_ref": "examples/telecom.csv",
+    "exists": true,
+    "size_bytes": 973,
+    "sha256_head": "b8158bcd00217bcb37d179f8a356971c8377f944d6e59a8b48f51d8ea18092a2"
+  },
+  "llm": {
+    "model": "gemini-flash-latest"
+  },
+  "prompt_versions": {
+    "domain_inferencer": "v1",
+    "check_generator": "v1",
+    "skeptic": "v1",
+    "report_writer": "v1"
+  },
+  "sample_n": 500
+}

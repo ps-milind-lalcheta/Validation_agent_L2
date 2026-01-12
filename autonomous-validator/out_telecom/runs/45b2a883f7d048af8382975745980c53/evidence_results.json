@@ -1,0 +1,191 @@
+[
+  {
+    "check_id": "call_id_format_validation",
+    "check_type": "regex_match",
+    "total_evaluated": 10,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": [
+      "Missing pattern for regex_match"
+    ]
+  },
+  {
+    "check_id": "caller_msisdn_length_standard",
+    "check_type": "length_range",
+    "total_evaluated": 10,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  },
+  {
+    "check_id": "callee_msisdn_not_null",
+    "check_type": "not_null",
+    "total_evaluated": 10,
+    "violation_count": 1,
+    "violation_rate": 0.1,
+    "examples_masked": [
+      {
+        "call_id": "C009",
+        "caller_msisdn": "91********78",
+        "callee_msisdn": null,
+        "call_start_utc": "20****01T12:45:00Z",
+        "call_duration_sec": 60,
+        "call_type": "VOICE",
+        "cell_tower_id": "TWR-1029",
+        "country_code": "IN",
+        "charge_amount": 2.5,
+        "currency": "INR"
+      }
+    ],
+    "notes": []
+  },
+  {
+    "check_id": "callee_msisdn_length_consistency",
+    "check_type": "length_range",
+    "total_evaluated": 9,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  },
+  {
+    "check_id": "call_start_utc_not_in_future",
+    "check_type": "date_not_future",
+    "total_evaluated": 0,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  },
+  {
+    "check_id": "call_start_utc_iso_format",
+    "check_type": "regex_match",
+    "total_evaluated": 10,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": [
+      "Missing pattern for regex_match"
+    ]
+  },
+  {
+    "check_id": "call_duration_non_negative",
+    "check_type": "value_range",
+    "total_evaluated": 10,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  },
+  {
+    "check_id": "call_duration_outlier_iqr",
+    "check_type": "outlier_iqr",
+    "total_evaluated": 10,
+    "violation_count": 2,
+    "violation_rate": 0.2,
+    "examples_masked": [
+      {
+        "call_id": "C004",
+        "caller_msisdn": "91********11",
+        "callee_msisdn": "~1e11",
+        "call_start_utc": "20****01T11:01:05Z",
+        "call_duration_sec": 3600,
+        "call_type": "VOICE",
+        "cell_tower_id": "TWR-1025",
+        "country_code": "IN",
+        "charge_amount": 150.0,
+        "currency": "INR"
+      },
+      {
+        "call_id": "C007",
+        "caller_msisdn": "91********77",
+        "callee_msisdn": "~1e11",
+        "call_start_utc": "20****01T12:10:00Z",
+        "call_duration_sec": 999999,
+        "call_type": "VOICE",
+        "cell_tower_id": "TWR-1027",
+        "country_code": "IN",
+        "charge_amount": 25.0,
+        "currency": "INR"
+      }
+    ],
+    "notes": [
+      "IQR bounds: [-348.8, 641.2]"
+    ]
+  },
+  {
+    "check_id": "call_type_new_categories",
+    "check_type": "category_newness",
+    "total_evaluated": 10,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": [
+      "No baseline allowed_values provided; newness check is weak in MVP"
+    ]
+  },
+  {
+    "check_id": "cell_tower_id_format",
+    "check_type": "regex_match",
+    "total_evaluated": 10,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": [
+      "Missing pattern for regex_match"
+    ]
+  },
+  {
+    "check_id": "country_code_iso_standard",
+    "check_type": "value_range",
+    "total_evaluated": 0,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  },
+  {
+    "check_id": "charge_amount_non_negative",
+    "check_type": "value_range",
+    "total_evaluated": 10,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  },
+  {
+    "check_id": "currency_code_standard",
+    "check_type": "value_range",
+    "total_evaluated": 0,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  },
+  {
+    "check_id": "dependency_zero_duration_zero_charge",
+    "check_type": "cross_field_dependency",
+    "total_evaluated": 0,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": [
+      "Missing column: unknown",
+      "Missing column: unknown"
+    ]
+  },
+  {
+    "check_id": "dependency_charged_call_positive_duration",
+    "check_type": "cross_field_dependency",
+    "total_evaluated": 0,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": [
+      "Missing column: unknown",
+      "Missing column: unknown"
+    ]
+  }
+]

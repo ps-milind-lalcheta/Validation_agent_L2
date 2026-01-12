@@ -1,0 +1,128 @@
+[
+  {
+    "check_id": "invoice_id_unique",
+    "check_type": "unique",
+    "total_evaluated": 5,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  },
+  {
+    "check_id": "invoice_id_format_consistency",
+    "check_type": "regex_match",
+    "total_evaluated": 5,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": [
+      "Missing pattern for regex_match"
+    ]
+  },
+  {
+    "check_id": "gst_number_mandatory_check",
+    "check_type": "not_null",
+    "total_evaluated": 5,
+    "violation_count": 1,
+    "violation_rate": 0.2,
+    "examples_masked": [
+      {
+        "invoice_id": "INV_003",
+        "gst_number": null,
+        "amount": 500.0,
+        "country": "IN"
+      }
+    ],
+    "notes": []
+  },
+  {
+    "check_id": "gst_number_format_validation",
+    "check_type": "regex_match",
+    "total_evaluated": 4,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": [
+      "Missing pattern for regex_match"
+    ]
+  },
+  {
+    "check_id": "amount_lower_bound",
+    "check_type": "value_range",
+    "total_evaluated": 5,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  },
+  {
+    "check_id": "amount_upper_bound",
+    "check_type": "value_range",
+    "total_evaluated": 5,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  },
+  {
+    "check_id": "amount_outlier_detection",
+    "check_type": "outlier_iqr",
+    "total_evaluated": 5,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": [
+      "Too few numeric points for IQR outlier detection"
+    ]
+  },
+  {
+    "check_id": "country_code_length",
+    "check_type": "length_range",
+    "total_evaluated": 5,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  },
+  {
+    "check_id": "country_newness_monitoring",
+    "check_type": "category_newness",
+    "total_evaluated": 5,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": [
+      "No baseline allowed_values provided; newness check is weak in MVP"
+    ]
+  },
+  {
+    "check_id": "gst_number_length_consistency",
+    "check_type": "length_range",
+    "total_evaluated": 4,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  },
+  {
+    "check_id": "conditional_gst_presence_in",
+    "check_type": "cross_field_dependency",
+    "total_evaluated": 0,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": [
+      "Missing column: unknown",
+      "Missing column: unknown"
+    ]
+  },
+  {
+    "check_id": "invoice_id_strict_length",
+    "check_type": "length_range",
+    "total_evaluated": 5,
+    "violation_count": 0,
+    "violation_rate": 0.0,
+    "examples_masked": [],
+    "notes": []
+  }
+]

@@ -1,0 +1,226 @@
+{
+  "checks": [
+    {
+      "check_id": "C1_CALL_ID_UNIQUE",
+      "check_type": "unique",
+      "title": "Call ID must be unique",
+      "rationale": "The 'call_id' serves as the primary identifier for each call event. Duplicates indicate severe data integrity issues or repeated records.",
+      "assumption": "Every row represents a distinct telecom event that must be uniquely identified by 'call_id'.",
+      "severity_suggestion": "fail",
+      "confidence": 1.0,
+      "params": {
+        "column": "call_id"
+      }
+    },
+    {
+      "check_id": "C2_CALL_ID_FORMAT",
+      "check_type": "regex_match",
+      "title": "Validate Call ID format (e.g., C001)",
+      "rationale": "Enforcing a consistent format (e.g., 1 letter followed by 3 digits) helps ensure data quality and system compatibility based on observed patterns.",
+      "assumption": "The 'call_id' follows a strict alphanumeric pattern, likely starting with a letter followed by three digits (A999 pattern).",
+      "severity_suggestion": "fail",
+      "confidence": 0.9,
+      "params": {
+        "column": "call_id",
+        "regex": "^[A-Z]{1}[0-9]{3}$"
+      }
+    },
+    {
+      "check_id": "C3_CALLEE_MSISDN_NULL_RATE",
+      "check_type": "not_null",
+      "title": "Callee MSISDN null rate threshold",
+      "rationale": "While 10% nulls were observed, the destination number ('callee_msisdn') is critical for billing and network analysis. A high null rate suggests missing data for attempted calls.",
+      "assumption": "For most recorded call events, the destination identifier should be present, and the null rate should not exceed 5%.",
+      "severity_suggestion": "warn",
+      "confidence": 0.8,
+      "params": {
+        "column": "callee_msisdn",
+        "threshold": 0.05
+      }
+    },
+    {
+      "check_id": "C4_CALL_DURATION_NON_NEGATIVE",
+      "check_type": "value_range",
+      "title": "Call duration must be non-negative",
+      "rationale": "Physical duration of a call cannot be negative. The observed minimum of -30 seconds suggests data errors or specific, non-standard signaling events.",
+      "assumption": "Standard call duration metrics must be zero or positive, representing time elapsed.",
+      "severity_suggestion": "fail",
+      "confidence": 0.95,
+      "params": {
+        "column": "call_duration_sec",
+        "min": 0.0
+      }
+    },
+    {
+      "check_id": "C5_CALL_DURATION_OUTLIER",
+      "check_type": "outlier_iqr",
+      "title": "Detect extreme outliers in call duration",
+      "rationale": "Extremely long durations (e.g., 999,999 seconds, ~11.5 days) are highly suspicious for a single call record and likely indicate stuck connections or data entry errors.",
+      "assumption": "Call durations follow a distribution where values significantly outside 3 standard IQR bounds are anomalies.",
+      "severity_suggestion": "warn",
+      "confidence": 0.9,
+      "params": {
+        "column": "call_duration_sec",
+        "k": 3.0
+      }
+    },
+    {
+      "check_id": "C6_CALL_START_NOT_FUTURE",
+      "check_type": "date_not_future",
+      "title": "Call start time must not be in the future",
+      "rationale": "As a record of a past event, the call start timestamp must be earlier than the current processing time.",
+      "assumption": "The 'call_start_utc' column accurately reflects the time of the event.",
+      "severity_suggestion": "fail",
+      "confidence": 1.0,
+      "params": {
+        "column": "call_start_utc",
+        "date_format": "YYYY-MM-DDTHH:MM:SSZ"
+      }
+    },
+    {
+      "check_id": "C7_CALL_TYPE_STABILITY",
+      "check_type": "category_newness",
+      "title": "Monitor for new or unexpected call types",
+      "rationale": "The 'call_type' field should be restricted to known categories (VOICE, SMS, DATA). New types could indicate system changes or miscategorization.",
+      "assumption": "The set of valid call types is stable and limited to the observed values.",
+      "severity_suggestion": "warn",
+      "confidence": 0.9,
+      "params": {
+        "column": "call_type",
+        "allowed_newness_ratio": 0.01,
+        "known_categories": [
+          "VOICE",
+          "SMS",
+          "DATA"
+        ]
+      }
+    },
+    {
+      "check_id": "C8_CELL_TOWER_ID_FORMAT",
+      "check_type": "regex_match",
+      "title": "Validate Cell Tower ID format",
+      "rationale": "Cell tower IDs typically follow a standardized internal format (e.g., TWR-XXXX) for easy identification and lookup.",
+      "assumption": "The 'cell_tower_id' must adhere to the observed 'TWR-' prefix followed by four digits.",
+      "severity_suggestion": "fail",
+      "confidence": 0.9,
+      "params": {
+        "column": "cell_tower_id",
+        "regex": "^TWR-[0-9]{4}$"
+      }
+    },
+    {
+      "check_id": "C9_CHARGE_AMOUNT_NON_NEGATIVE",
+      "check_type": "value_range",
+      "title": "Charge amount must be non-negative",
+      "rationale": "A charge amount should generally be zero or positive, representing a cost incurred. Negative values might indicate refunds, but should be explicitly handled or flagged.",
+      "assumption": "This column tracks standard charges, which are non-negative.",
+      "severity_suggestion": "fail",
+      "confidence": 0.95,
+      "params": {
+        "column": "charge_amount",
+        "min": 0.0
+      }
+    },
+    {
+      "check_id": "C10_CURRENCY_FORMAT",
+      "check_type": "regex_match",
+      "title": "Validate Currency code format (ISO 4217)",
+      "rationale": "Currency codes must be three-letter uppercase codes (ISO 4217 standard) for consistency in financial reporting.",
+      "assumption": "The currency column uses standard ISO 4217 codes.",
+      "severity_suggestion": "fail",
+      "confidence": 1.0,
+      "params": {
+        "column": "currency",
+        "regex": "^[A-Z]{3}$"
+      }
+    },
+    {
+      "check_id": "C11_COUNTRY_CODE_FORMAT",
+      "check_type": "regex_match",
+      "title": "Validate Country code format (ISO 3166-1 alpha-2)",
+      "rationale": "Country codes must be two-letter uppercase codes (ISO 3166-1 alpha-2 standard).",
+      "assumption": "The country code uses standard ISO 3166-1 alpha-2 codes.",
+      "severity_suggestion": "fail",
+      "confidence": 1.0,
+      "params": {
+        "column": "country_code",
+        "regex": "^[A-Z]{2}$"
+      }
+    },
+    {
+      "check_id": "C12_CALLER_MSISDN_LENGTH",
+      "check_type": "length_range",
+      "title": "Validate Caller MSISDN length consistency",
+      "rationale": "Phone numbers (MSISDNs) within a specific region or system usually adhere to a fixed or narrow length range (observed 11-12).",
+      "assumption": "The length of 'caller_msisdn' must remain between 11 and 12 characters.",
+      "severity_suggestion": "warn",
+      "confidence": 0.9,
+      "params": {
+        "column": "caller_msisdn",
+        "min_length": 11,
+        "max_length": 12
+      }
+    },
+    {
+      "check_id": "C13_CALLEE_MSISDN_LENGTH_CHECK",
+      "check_type": "length_range",
+      "title": "Validate Callee MSISDN length (Potential Short Code)",
+      "rationale": "The observed length of 5 is highly unusual for a standard MSISDN but consistent for short codes or internal identifiers. This check enforces the observed range.",
+      "assumption": "The 'callee_msisdn' field is expected to contain identifiers of length 5, likely representing short codes or internal routing numbers.",
+      "severity_suggestion": "info",
+      "confidence": 0.7,
+      "params": {
+        "column": "callee_msisdn",
+        "min_length": 5,
+        "max_length": 5
+      }
+    },
+    {
+      "check_id": "C14_CROSS_FIELD_ZERO_DURATION_ZERO_CHARGE",
+      "check_type": "cross_field_dependency",
+      "title": "Zero duration implies zero charge",
+      "rationale": "If a voice call duration is zero (e.g., failed connection), there should typically be no charge associated with it.",
+      "assumption": "For voice calls, a duration of 0 seconds results in a charge of 0.0 units.",
+      "severity_suggestion": "warn",
+      "confidence": 0.85,
+      "params": {
+        "condition_column": "call_duration_sec",
+        "condition_operator": "==",
+        "condition_value": 0,
+        "target_column": "charge_amount",
+        "target_operator": "==",
+        "target_value": 0.0
+      }
+    },
+    {
+      "check_id": "C15_CROSS_FIELD_COUNTRY_CURRENCY_MATCH",
+      "check_type": "cross_field_dependency",
+      "title": "Country Code and Currency consistency",
+      "rationale": "If the country code is 'IN', the currency should consistently be 'INR', assuming these records primarily cover domestic traffic.",
+      "assumption": "All transactions originating or recorded in the country 'IN' must be charged in 'INR'.",
+      "severity_suggestion": "warn",
+      "confidence": 0.9,
+      "params": {
+        "condition_column": "country_code",
+        "condition_operator": "==",
+        "condition_value": "IN",
+        "target_column": "currency",
+        "target_operator": "==",
+        "target_value": "INR"
+      }
+    },
+    {
+      "check_id": "C16_CALL_START_UTC_REGEX",
+      "check_type": "regex_match",
+      "title": "Validate Call Start UTC format consistency",
+      "rationale": "Ensures the timestamp string adheres to the expected ISO-like format (YYYYMMDDTHH:MM:SSZ) for reliable parsing.",
+      "assumption": "The timestamp format is strictly YYYYMMDDTHH:MM:SSZ, where the date part is represented by 8 digits.",
+      "severity_suggestion": "fail",
+      "confidence": 0.95,
+      "params": {
+        "column": "call_start_utc",
+        "regex": "^\\d{8}T\\d{2}:\\d{2}:\\d{2}Z$"
+      }
+    }
+  ]
+}

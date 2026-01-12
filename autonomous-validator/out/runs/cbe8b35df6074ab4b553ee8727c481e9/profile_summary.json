@@ -1,0 +1,121 @@
+{
+  "dataset_name": "invoices.csv",
+  "row_count_estimate": 5,
+  "columns": [
+    {
+      "name": "invoice_id",
+      "inferred_type": "string",
+      "example_values_masked": [
+        "INV_001",
+        "INV_002",
+        "INV_003"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 1.0,
+      "top_values_masked": [
+        "INV_001",
+        "INV_002",
+        "INV_003",
+        "INV_004",
+        "INV_005"
+      ],
+      "length_min": 7,
+      "length_max": 7,
+      "pattern_samples": [
+        "AAA_999",
+        "AAA_999",
+        "AAA_999",
+        "AAA_999",
+        "AAA_999"
+      ],
+      "numeric_stats": null,
+      "date_stats": null
+    },
+    {
+      "name": "gst_number",
+      "inferred_type": "string",
+      "example_values_masked": [
+        "27ABCDE1234F1Z5",
+        "27ABCDE1234F1Z5",
+        "12*********23"
+      ],
+      "null_rate": 0.2,
+      "unique_rate": 0.75,
+      "top_values_masked": [
+        "27ABCDE1234F1Z5",
+        "12*********23",
+        "27PQRSX9876K1Z5"
+      ],
+      "length_min": 13,
+      "length_max": 15,
+      "pattern_samples": [
+        "99AAAAA9999A9A9",
+        "99AAAAA9999A9A9",
+        "99*********99",
+        "99AAAAA9999A9A9"
+      ],
+      "numeric_stats": null,
+      "date_stats": null
+    },
+    {
+      "name": "amount",
+      "inferred_type": "number",
+      "example_values_masked": [
+        "1200.5",
+        "-20.0",
+        "500.0"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 1.0,
+      "top_values_masked": [
+        "1200.5",
+        "-20.0",
+        "500.0",
+        "900.0",
+        "100.0"
+      ],
+      "length_min": null,
+      "length_max": null,
+      "pattern_samples": [],
+      "numeric_stats": {
+        "min": -20.0,
+        "max": 1200.5,
+        "mean": 536.1,
+        "std": 518.3107658538456,
+        "p05": 4.0,
+        "p50": 500.0,
+        "p95": 1140.3999999999999
+      },
+      "date_stats": null
+    },
+    {
+      "name": "country",
+      "inferred_type": "string",
+      "example_values_masked": [
+        "IN",
+        "IN",
+        "IN"
+      ],
+      "null_rate": 0.0,
+      "unique_rate": 0.4,
+      "top_values_masked": [
+        "IN",
+        "UK"
+      ],
+      "length_min": 2,
+      "length_max": 2,
+      "pattern_samples": [
+        "AA",
+        "AA",
+        "AA",
+        "AA",
+        "AA"
+      ],
+      "numeric_stats": null,
+      "date_stats": null
+    }
+  ],
+  "notes": [
+    "profile computed on masked sample"
+  ]
+}

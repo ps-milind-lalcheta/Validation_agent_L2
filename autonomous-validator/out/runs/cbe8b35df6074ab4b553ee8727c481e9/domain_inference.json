@@ -1,0 +1,37 @@
+{
+  "hypotheses": [
+    {
+      "domain": "Finance/Accounting (Invoicing)",
+      "confidence": 1.0,
+      "rationale": "The dataset is named 'invoices.csv' and contains core financial transaction fields like 'invoice_id', 'amount', and a specific tax identifier ('gst_number'), which are central to invoicing records."
+    }
+  ],
+  "column_roles": [
+    {
+      "column": "invoice_id",
+      "role": "id",
+      "confidence": 1.0,
+      "rationale": "The column name 'invoice_id' and its high uniqueness (1.0) strongly indicate it serves as the primary identifier for the invoice record."
+    },
+    {
+      "column": "gst_number",
+      "role": "tax_id",
+      "confidence": 1.0,
+      "rationale": "The column name 'gst_number' (Goods and Services Tax number) explicitly identifies it as a tax identification number."
+    },
+    {
+      "column": "amount",
+      "role": "amount",
+      "confidence": 1.0,
+      "rationale": "This is a numeric column representing monetary values, including positive and negative values, typical for transaction amounts."
+    },
+    {
+      "column": "country",
+      "role": "country",
+      "confidence": 1.0,
+      "rationale": "The column contains short, two-letter codes ('IN', 'UK') consistent with ISO country codes."
+    }
+  ],
+  "assumptions": [],
+  "questions_to_reduce_uncertainty": []
+}

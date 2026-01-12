@@ -1,0 +1,141 @@
+{
+  "decision": "FAIL",
+  "overall_confidence": 0.75,
+  "inferred_domains": [
+    {
+      "domain": "Finance/Accounting (Invoicing)",
+      "confidence": 1.0,
+      "rationale": "The dataset is named 'invoices.csv' and contains core financial transaction fields like 'invoice_id', 'amount', and a specific tax identifier ('gst_number'), which are central to invoicing records."
+    }
+  ],
+  "key_assumptions": [
+    "The dataset represents transactional invoice data where data integrity (uniqueness, completeness) is paramount.",
+    "The GST number is a mandatory field for tax compliance, especially for invoices associated with the 'IN' (India) country code.",
+    "The small sample size (N=5) is representative of the overall data quality issues."
+  ],
+  "top_issues": [
+    "Critical data integrity failure: 20% of records are missing the mandatory GST (Goods and Services Tax) number.",
+    "The missing GST number specifically affects invoices associated with the 'IN' country code, indicating a severe tax compliance risk."
+  ],
+  "findings": [
+    {
+      "check_id": "invoice_id_unique",
+      "outcome": "pass",
+      "confidence": 1.0,
+      "summary": "Invoice IDs are unique.",
+      "evidence_used": "0 violations out of 5 evaluated. Unique rate is 1.0.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "invoice_id_format_consistency",
+      "outcome": "pass",
+      "confidence": 0.8,
+      "summary": "Invoice IDs match the expected 'INV_###' format.",
+      "evidence_used": "0 violations out of 5 evaluated. Pattern consistency is high, though the executor noted a potential issue ('Missing pattern for regex_match').",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "gst_number_mandatory_check",
+      "outcome": "fail",
+      "confidence": 0.9,
+      "summary": "GST Number is not mandatory, resulting in 20% null values (1 out of 5 records). This is a critical compliance failure.",
+      "evidence_used": "1 violation found out of 5 total records. Example shows a null GST number for a valid invoice.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "gst_number_format_validation",
+      "outcome": "pass",
+      "confidence": 0.7,
+      "summary": "Non-null GST numbers adhere to the standard 15-character GSTIN format.",
+      "evidence_used": "0 violations found among the 4 non-null records. Confidence is slightly reduced due to the small sample size and executor note ('Missing pattern for regex_match').",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "amount_lower_bound",
+      "outcome": "pass",
+      "confidence": 0.9,
+      "summary": "All amounts are within reasonable negative bounds (Min: -20.0, Threshold: -10000.0).",
+      "evidence_used": "0 violations out of 5 evaluated.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "amount_upper_bound",
+      "outcome": "pass",
+      "confidence": 0.9,
+      "summary": "All amounts are well below the quarantine threshold (Max observed: 1200.5, Threshold: 50000.0).",
+      "evidence_used": "0 violations out of 5 evaluated.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "amount_outlier_detection",
+      "outcome": "pass",
+      "confidence": 0.5,
+      "summary": "No statistical outliers detected, but the result is unreliable.",
+      "evidence_used": "0 violations. Executor noted: 'Too few numeric points for IQR outlier detection' (N=5). Confidence is downgraded significantly.",
+      "alternative_explanations": [
+        "The sample size is too small (N=5) to reliably calculate or detect statistical outliers using IQR methods."
+      ],
+      "recommended_next_steps": [
+        "Re-run outlier detection when the dataset size exceeds 30 records."
+      ]
+    },
+    {
+      "check_id": "country_code_length",
+      "outcome": "pass",
+      "confidence": 1.0,
+      "summary": "All country codes are exactly 2 characters long, adhering to the ISO standard.",
+      "evidence_used": "0 violations out of 5 evaluated. Profile confirms strict length of 2.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "country_newness_monitoring",
+      "outcome": "pass",
+      "confidence": 0.6,
+      "summary": "No new country codes detected relative to the observed set ('IN', 'UK').",
+      "evidence_used": "0 violations. The check is weak as no baseline was provided, limiting its utility.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "gst_number_length_consistency",
+      "outcome": "pass",
+      "confidence": 0.8,
+      "summary": "All non-null GST numbers are 15 characters long, consistent with the GSTIN standard.",
+      "evidence_used": "0 violations out of 4 evaluated. This contradicts the profile summary's minimum length (13), suggesting the 13-char sample was a masking artifact or excluded.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    },
+    {
+      "check_id": "conditional_gst_presence_in",
+      "outcome": "fail",
+      "confidence": 0.8,
+      "summary": "Critical dependency failure: An invoice originating from 'IN' (India) is missing the required 'gst_number'.",
+      "evidence_used": "The executor failed to run this check, but manual inference based on the 'gst_number_mandatory_check' violation confirms that the null GST record corresponds to Country='IN'. This represents 1 violation (20% of the data where Country='IN').",
+      "alternative_explanations": [
+        "The invoice might be a B2C transaction or an export, where GST requirements differ, but this is unlikely given the severity of the failure."
+      ],
+      "recommended_next_steps": [
+        "Investigate the source system to ensure GST numbers are captured for all domestic Indian invoices.",
+        "Fix the executor configuration to properly evaluate cross-field dependencies."
+      ]
+    },
+    {
+      "check_id": "invoice_id_strict_length",
+      "outcome": "pass",
+      "confidence": 0.95,
+      "summary": "Invoice IDs maintain a strict length of 7 characters.",
+      "evidence_used": "0 violations out of 5 evaluated.",
+      "alternative_explanations": [],
+      "recommended_next_steps": []
+    }
+  ],
+  "human_summary": "The dataset, identified as Invoicing data, exhibits a critical compliance failure: 20% of records are missing the mandatory GST (tax identification) number. This issue is specifically linked to invoices from India ('IN'), where tax IDs are typically required. While structural checks (ID format, amount bounds, country code length) passed, the small sample size (N=5) significantly reduces confidence in statistical and coverage checks. The missing tax ID warrants a FAIL decision due to severe compliance risk.",
+  "audit_notes": []
+}
